@@ -7,23 +7,19 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/docker/docker/pkg/sockets"
+	"github.com/docker/go-connections/sockets"
 )
 
 const (
 	pluginSockDir = "/run/docker/plugins"
 )
 
-func newUnixListener(
-	volumeDriverName string,
-	group string,
-	start <-chan struct{},
-) (net.Listener, string, error) {
+func newUnixListener( volumeDriverName string, group string) (net.Listener, string, error) {
 	path, err := fullSocketAddress(volumeDriverName)
 	if err != nil {
 		return nil, "", err
 	}
-	listener, err := sockets.NewUnixSocket(path, group, start)
+	listener, err := sockets.NewUnixSocket(path, group)
 	if err != nil {
 		return nil, "", err
 	}

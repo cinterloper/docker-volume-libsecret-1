@@ -7,14 +7,8 @@ import (
 	"net"
 )
 
-var (
-	errOnlySupportedOnLinuxAndFreeBSD = errors.New("unix socket creation is only supported on linux and freebsd")
-)
+var ( errOnlySupportedOnLinuxAndFreeBSD = errors.New("unix socket creation is only supported on linux and freebsd"))
 
-func newUnixListener(
-	volumeDriverName string,
-	group string,
-	start <-chan struct{},
-) (net.Listener, string, error) {
+func newUnixListener( volumeDriverName string, group string) (net.Listener, string, error) {
 	return nil, "", errOnlySupportedOnLinuxAndFreeBSD
 }
