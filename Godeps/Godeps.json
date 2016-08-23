@@ -1,0 +1,118 @@
+{
+	"ImportPath": "github.com/newrelic-forks/docker-volume-libsecret",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v74",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "bazil.org/fuse",
+			"Rev": "b3d5a5514a27076c63844bde6d60703a7aea4adc"
+		},
+		{
+			"ImportPath": "bazil.org/fuse/fs",
+			"Rev": "b3d5a5514a27076c63844bde6d60703a7aea4adc"
+		},
+		{
+			"ImportPath": "bazil.org/fuse/fuseutil",
+			"Rev": "b3d5a5514a27076c63844bde6d60703a7aea4adc"
+		},
+		{
+			"ImportPath": "github.com/Microsoft/go-winio",
+			"Comment": "v0.3.5-2-gce2922f",
+			"Rev": "ce2922f643c8fd76b46cadc7f404a06282678b34"
+		},
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.7.3",
+			"Rev": "55eb11d21d2a31a3cc93838241d04800f52e823d"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-143-ga65b733",
+			"Rev": "a65b733b303f0055f8d324d805f393cd3e7a7904"
+		},
+		{
+			"ImportPath": "github.com/coreos/go-systemd/activation",
+			"Comment": "v3-11-g6f3d6b0",
+			"Rev": "6f3d6b0accd17b33624ee4df1532a03de6e4d536"
+		},
+		{
+			"ImportPath": "github.com/coreos/go-systemd/util",
+			"Comment": "v3-11-g6f3d6b0",
+			"Rev": "6f3d6b0accd17b33624ee4df1532a03de6e4d536"
+		},
+		{
+			"ImportPath": "github.com/docker/go-connections/sockets",
+			"Comment": "v0.2.1-2-g0bad1a3",
+			"Rev": "0bad1a3951398f88ef4dd75fdb42af374430be89"
+		},
+		{
+			"ImportPath": "github.com/docker/go-plugins-helpers/sdk",
+			"Rev": "f3a3876798ee4f63bee3e7ee8911a2c27e7710b9"
+		},
+		{
+			"ImportPath": "github.com/docker/go-plugins-helpers/volume",
+			"Rev": "f3a3876798ee4f63bee3e7ee8911a2c27e7710b9"
+		},
+		{
+			"ImportPath": "github.com/ehazlett/libsecret",
+			"Rev": "0023382287f0194d35d18b3d43bbfd9982ee311b"
+		},
+		{
+			"ImportPath": "github.com/ehazlett/libsecret/store",
+			"Rev": "0023382287f0194d35d18b3d43bbfd9982ee311b"
+		},
+		{
+			"ImportPath": "github.com/ehazlett/libsecret/store/vault",
+			"Rev": "0023382287f0194d35d18b3d43bbfd9982ee311b"
+		},
+		{
+			"ImportPath": "github.com/fatih/structs",
+			"Rev": "a9f7daa9c2729e97450c2da2feda19130a367d8f"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/go-multierror",
+			"Rev": "d30f09973e19c1dfcd120b2d9c4f168e68d6b5d5"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl",
+			"Rev": "d8c773c4cba11b11539e3d45f93daeaa5dcf1fa1"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/hcl",
+			"Rev": "d8c773c4cba11b11539e3d45f93daeaa5dcf1fa1"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/hcl/json",
+			"Rev": "d8c773c4cba11b11539e3d45f93daeaa5dcf1fa1"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/vault/api",
+			"Comment": "v0.6.0-rebuild-263-g95597a4",
+			"Rev": "95597a4a9e7104ef97877a5e58789dced29dc207"
+		},
+		{
+			"ImportPath": "github.com/mitchellh/mapstructure",
+			"Rev": "482a9fd5fa83e8c4e7817413b80f3eb8feec03ef"
+		},
+		{
+			"ImportPath": "github.com/opencontainers/runc/libcontainer/user",
+			"Comment": "v1.0.0-rc1-69-ga0dccbd",
+			"Rev": "a0dccbd1749cf15c38e6c3e6560e16bdc7c5d039"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "97d8e4e174133a4d1d2171380e510eb4dea8f5ea"
+		},
+		{
+			"ImportPath": "golang.org/x/net/proxy",
+			"Rev": "97d8e4e174133a4d1d2171380e510eb4dea8f5ea"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/windows",
+			"Rev": "833a04a10549a95dc34458c195cbad61bbb6cb4d"
+		}
+	]
+}

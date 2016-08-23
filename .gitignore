@@ -1,2 +1,3 @@
 docker-volume-libsecret
 *.swp
+Vagrantfile

@@ -6,7 +6,7 @@ import (
 	"syscall"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/calavera/dkvolume"
+	"github.com/docker/go-plugins-helpers/volume"
 	"github.com/ehazlett/libsecret/store"
 )
 
@@ -36,7 +36,7 @@ func (d *SecretDriver) resolvePath(name string) string {
 	return filepath.Join(d.root, name)
 }
 
-func (d *SecretDriver) Create(r dkvolume.Request) dkvolume.Response {
+func (d *SecretDriver) Create(r volume.Request) volume.Response {
 	log.Debugf("create: %v", r)
 
 	p := d.resolvePath(r.Name)
@@ -46,10 +46,10 @@ func (d *SecretDriver) Create(r dkvolume.Request) dkvolume.Response {
 		errStr = err.Error()
 	}
 
-	return dkvolume.Response{Err: errStr}
+	return volume.Response{Err: errStr}
 }
 
-func (d *SecretDriver) Remove(r dkvolume.Request) dkvolume.Response {
+func (d *SecretDriver) Remove(r volume.Request) volume.Response {
 	log.Debugf("remove: %v", r)
 
 	p := d.resolvePath(r.Name)
@@ -59,17 +59,17 @@ func (d *SecretDriver) Remove(r dkvolume.Request) dkvolume.Response {
 		errStr = err.Error()
 	}
 
-	return dkvolume.Response{Err: errStr}
+	return volume.Response{Err: errStr}
 }
 
-func (d *SecretDriver) Path(r dkvolume.Request) dkvolume.Response {
+func (d *SecretDriver) Path(r volume.Request) volume.Response {
 	log.Debugf("path: %v", r)
 
 	p := d.resolvePath(r.Name)
-	return dkvolume.Response{Mountpoint: p}
+	return volume.Response{Mountpoint: p}
 }
 
-func (d *SecretDriver) Mount(r dkvolume.Request) dkvolume.Response {
+func (d *SecretDriver) Mount(r volume.MountRequest) volume.Response {
 	log.Debugf("mount: %v", r)
 
 	p := d.resolvePath(r.Name)
@@ -87,13 +87,31 @@ func (d *SecretDriver) Mount(r dkvolume.Request) dkvolume.Response {
 
 	d.fs[r.Name] = fs
 
-	return dkvolume.Response{
+	return volume.Response{
 		Mountpoint: filepath.Join(d.root, r.Name),
 		Err:        errStr,
 	}
 }
 
-func (d *SecretDriver) Unmount(r dkvolume.Request) dkvolume.Response {
+func (d *SecretDriver) Capabilities(r volume.Request) volume.Response {
+	var response volume.Response
+	log.Debugf("capabilities: %#v", r)
+	return response
+}
+
+func (d *SecretDriver) Get(r volume.Request) volume.Response {
+	var response volume.Response
+	log.Debugf("get: %#v", r)
+	return response
+}
+
+func (d *SecretDriver) List(r volume.Request) volume.Response {
+	var response volume.Response
+	log.Debugf("list: %#v", r)
+	return response
+}
+
+func (d *SecretDriver) Unmount(r volume.UnmountRequest) volume.Response {
 	log.Debugf("unmount: %v", r)
 
 	p := d.resolvePath(r.Name)
@@ -101,5 +119,5 @@ func (d *SecretDriver) Unmount(r dkvolume.Request) dkvolume.Response {
 		log.Fatal(err)
 	}
 
-	return dkvolume.Response{}
+	return volume.Response{}
 }

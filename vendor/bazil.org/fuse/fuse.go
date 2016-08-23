@@ -235,7 +235,7 @@ func initMount(c *Conn, conf *mountConfig) error {
 	s := &InitResponse{
 		Library:      proto,
 		MaxReadahead: conf.maxReadahead,
-		MaxWrite:     128 * 1024,
+		MaxWrite:     maxWrite,
 		Flags:        InitBigWrites | conf.initFlags,
 	}
 	r.Respond(s)
@@ -402,9 +402,6 @@ func (h *Header) RespondError(err error) {
 	hOut.Error = -int32(errno)
 	h.respond(buf)
 }
-
-// Maximum file write size we are prepared to receive from the kernel.
-const maxWrite = 16 * 1024 * 1024
 
 // All requests read from the kernel, without data, are shorter than
 // this.
@@ -1020,7 +1017,33 @@ loop:
 	case opGetxtimes:
 		panic("opGetxtimes")
 	case opExchange:
-		panic("opExchange")
+		in := (*exchangeIn)(m.data())
+		if m.len() < unsafe.Sizeof(*in) {
+			goto corrupt
+		}
+		oldDirNodeID := NodeID(in.Olddir)
+		newDirNodeID := NodeID(in.Newdir)
+		oldNew := m.bytes()[unsafe.Sizeof(*in):]
+		// oldNew should be "oldname\x00newname\x00"
+		if len(oldNew) < 4 {
+			goto corrupt
+		}
+		if oldNew[len(oldNew)-1] != '\x00' {
+			goto corrupt
+		}
+		i := bytes.IndexByte(oldNew, '\x00')
+		if i < 0 {
+			goto corrupt
+		}
+		oldName, newName := string(oldNew[:i]), string(oldNew[i+1:len(oldNew)-1])
+		req = &ExchangeDataRequest{
+			Header:  m.Header(),
+			OldDir:  oldDirNodeID,
+			NewDir:  newDirNodeID,
+			OldName: oldName,
+			NewName: newName,
+			// TODO options
+		}
 	}
 
 	return req, nil
@@ -1300,7 +1323,7 @@ type Attr struct {
 	Ctime     time.Time   // time of last inode change
 	Crtime    time.Time   // time of creation (OS X only)
 	Mode      os.FileMode // file mode
-	Nlink     uint32      // number of links
+	Nlink     uint32      // number of links (usually 1)
 	Uid       uint32      // owner uid
 	Gid       uint32      // group gid
 	Rdev      uint32      // device numbers
@@ -2250,4 +2273,31 @@ func (r *InterruptRequest) Respond() {
 
 func (r *InterruptRequest) String() string {
 	return fmt.Sprintf("Interrupt [%s] ID %v", &r.Header, r.IntrID)
+}
+
+// An ExchangeDataRequest is a request to exchange the contents of two
+// files, while leaving most metadata untouched.
+//
+// This request comes from OS X exchangedata(2) and represents its
+// specific semantics. Crucially, it is very different from Linux
+// renameat(2) RENAME_EXCHANGE.
+//
+// https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man2/exchangedata.2.html
+type ExchangeDataRequest struct {
+	Header           `json:"-"`
+	OldDir, NewDir   NodeID
+	OldName, NewName string
+	// TODO options
+}
+
+var _ = Request(&ExchangeDataRequest{})
+
+func (r *ExchangeDataRequest) String() string {
+	// TODO options
+	return fmt.Sprintf("ExchangeData [%s] %v %q and %v %q", &r.Header, r.OldDir, r.OldName, r.NewDir, r.NewName)
+}
+
+func (r *ExchangeDataRequest) Respond() {
+	buf := newBuffer(0)
+	r.respond(buf)
 }

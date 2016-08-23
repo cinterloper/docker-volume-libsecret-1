@@ -14,9 +14,8 @@ import (
 )
 
 var (
-	errNoAvail         = errors.New("no available fuse devices")
-	errNotLoaded       = errors.New("osxfuse is not loaded")
-	errOSXFUSENotFound = errors.New("cannot locate OSXFUSE")
+	errNoAvail   = errors.New("no available fuse devices")
+	errNotLoaded = errors.New("osxfuse is not loaded")
 )
 
 func loadOSXFUSE(bin string) error {
@@ -91,7 +90,7 @@ func isBoringMountOSXFUSEError(err error) bool {
 	return false
 }
 
-func callMount(bin string, dir string, conf *mountConfig, f *os.File, ready chan<- struct{}, errp *error) error {
+func callMount(bin string, daemonVar string, dir string, conf *mountConfig, f *os.File, ready chan<- struct{}, errp *error) error {
 	for k, v := range conf.options {
 		if strings.Contains(k, ",") || strings.Contains(v, ",") {
 			// Silly limitation but the mount helper does not
@@ -114,14 +113,15 @@ func callMount(bin string, dir string, conf *mountConfig, f *os.File, ready chan
 	)
 	cmd.ExtraFiles = []*os.File{f}
 	cmd.Env = os.Environ()
+	// OSXFUSE <3.3.0
 	cmd.Env = append(cmd.Env, "MOUNT_FUSEFS_CALL_BY_LIB=")
+	// OSXFUSE >=3.3.0
+	cmd.Env = append(cmd.Env, "MOUNT_OSXFUSE_CALL_BY_LIB=")
 
-	// TODO this is used for fs typenames etc, let app influence it
-
-	// for OSXFUSE 2.x
-	cmd.Env = append(cmd.Env, "MOUNT_FUSEFS_DAEMON_PATH="+bin)
-	// for OSXFUSE 3.x
-	cmd.Env = append(cmd.Env, "MOUNT_OSXFUSE_DAEMON_PATH="+bin)
+	daemon := os.Args[0]
+	if daemonVar != "" {
+		cmd.Env = append(cmd.Env, daemonVar+"="+daemon)
+	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -197,12 +197,12 @@ func mount(dir string, conf *mountConfig, ready chan<- struct{}, errp *error) (*
 		if err != nil {
 			return nil, err
 		}
-		err = callMount(loc.Mount, dir, conf, f, ready, errp)
+		err = callMount(loc.Mount, loc.DaemonVar, dir, conf, f, ready, errp)
 		if err != nil {
 			f.Close()
 			return nil, err
 		}
 		return f, nil
 	}
-	return nil, errOSXFUSENotFound
+	return nil, ErrOSXFUSENotFound
 }

@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/calavera/dkvolume"
 	"github.com/codegangsta/cli"
-	"github.com/ehazlett/docker-volume-libsecret/version"
+	"github.com/docker/go-plugins-helpers/volume"
 	"github.com/ehazlett/libsecret/store"
+	"github.com/newrelic-forks/docker-volume-libsecret/version"
 
 	// supported backends
 	"github.com/ehazlett/libsecret/store/vault"
@@ -101,7 +101,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		h := dkvolume.NewHandler(d)
+		h := volume.NewHandler(d)
 		if err := h.ServeUnix("root", "libsecret"); err != nil {
 			log.Fatal(err)
 		}
